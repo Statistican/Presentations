@@ -64,14 +64,18 @@ df_cars %>%
 # Modellprüfung
 performance::check_model(lm_obj, check = 'linearity')
 
-df_cars %>% 
+
+# logarthimierter Prädiktor
+lm_obj_log <- 
+  df_cars %>% 
   mutate(hp_log = log(hp)) %>% 
-  lm(lkm ~ hp_log, data = .) %>% 
-  performance::check_model(., check = 'linearity')
+  lm(lkm ~ hp_log, data = .)
+
+
+performance::check_model(lm_obj_log, check = 'linearity')
 
 lmtest::raintest(lm_obj_log, fraction = .5) %>% 
-  broom::tidy() %>%
-  flex()
+  broom::tidy() 
 
 
 lm_res %>% 
@@ -107,15 +111,12 @@ bc <- MASS::boxcox(lm_obj, plotit = T)
 df_cars %>% 
   mutate(log_lkm = log(lkm)) %>% 
   lm(log_lkm ~ hp, data = .) %>% 
-  tidy()
-  
+  #tidy()
   augment() %>% 
   ggplot(aes(x=hp, y=log_lkm)) +
   geom_point() +
   geom_smooth(method = 'lm')
-  
-  ggplot(aes(x = .resid)) +
-  geom_histogram()
+
   
   
-  https://github.com/Statistican/Presentations
+  
